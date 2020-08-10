@@ -1,0 +1,8 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\AHT10.obj",
+".\Objects\Delay.obj",
+".\Objects\Uart.obj",
+".\Objects\IIC.obj" 
+TO ".\Objects\STC8-AHT10" 
+PRINT(".\Listings\STC8-AHT10.m51") RAMSIZE(256) 

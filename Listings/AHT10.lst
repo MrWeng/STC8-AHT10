@@ -1,0 +1,145 @@
+C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE AHT10
+OBJECT MODULE PLACED IN .\Objects\AHT10.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE AHT10\AHT10.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\AHT10;.\Delay;.\UART;.\I
+                    -IC) DEBUG OBJECTEXTEND PRINT(.\Listings\AHT10.lst) OBJECT(.\Objects\AHT10.obj)
+
+line level    source
+
+   1          #include "AHT10.h"
+   2          #include "IIC.h"
+   3          #include "Delay.h"
+   4          
+   5          
+   6          //软复位
+   7          void AHT10_RST()     
+   8          {
+   9   1              IIC_start();
+  10   1              IIC_write_byte(AHT10_Wr);
+  11   1              IIC_Get_ack();                          //接收应答
+  12   1              IIC_write_byte(0xba);   //发送软复位指令
+  13   1              IIC_Get_ack();                          //接收应答
+  14   1              IIC_stop(); 
+  15   1      }
+  16          //触发测量
+  17          void AHT10_Mea()                
+  18          {
+  19   1              IIC_start();
+  20   1              IIC_write_byte(AHT10_Wr);
+  21   1              IIC_Get_ack();                          //接收应答
+  22   1              IIC_write_byte(0xac);   //触发测量指令
+  23   1              IIC_Get_ack();                          //接收应答
+  24   1              IIC_write_byte(0x33);   //指令参数
+  25   1              IIC_Get_ack();                          //接收应答
+  26   1              IIC_write_byte(0x00);
+  27   1              IIC_Get_ack();                          //接收应答
+  28   1              IIC_stop(); 
+  29   1      }
+  30          //读取AHT10状态字
+  31          unsigned char AHT10_Status()         
+  32          {
+  33   1              unsigned char byte_first;
+  34   1              IIC_start();
+  35   1              IIC_write_byte(AHT10_Rd);
+  36   1              IIC_Get_ack();                          //接收应答
+  37   1              byte_first = IIC_read_byte();   //接收数据
+  38   1              IIC_NACK();                                                                             //非应答，不再接收后续数据
+  39   1              IIC_stop();
+  40   1              return byte_first;
+  41   1      }
+  42          //判断AHT10校准使能     
+  43          unsigned char AHT10_CalEN(){
+  44   1              unsigned char val = 0;
+  45   1              val = AHT10_Status();
+  46   1              if((val & 0x08) == 0x08)                //bit[3]为校准位，1位已校准，0位未校准
+  47   1                      return 1;
+  48   1              else 
+  49   1                      return 0;
+  50   1      }
+  51          //初始化
+  52          void AHT10Init(){
+  53   1              IIC_start();
+  54   1              IIC_write_byte(AHT10_Wr);
+C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 2   
+
+  55   1              IIC_Get_ack();                          //接收应答
+  56   1        IIC_write_byte(0xe1); //初始化指令
+  57   1              IIC_Get_ack();                          //接收应答
+  58   1        IIC_write_byte(0x08); //初始化参数
+  59   1              IIC_Get_ack();                          //接收应答
+  60   1        IIC_write_byte(0x00);
+  61   1              IIC_Get_ack();                          //接收应答
+  62   1              IIC_stop();
+  63   1      }
+  64          //初始化并判断是否校准
+  65          void AHT10_Init()       
+  66          {
+  67   1              Delay_ms(45);   //上电时等待45毫秒
+  68   1              AHT10Init();            //尝试初始化
+  69   1              while(AHT10_CalEN() == 0)//如果未校准，则复位，再此尝试初始化，直到校准完成
+  70   1              {       //注意，如果初始化未完成会死循环，此时请检查接线是否存在问题或传感器是否损坏
+  71   2                      AHT10_RST();            //复位
+  72   2                      Delay_ms(15);   //复位时间不超过20ms
+  73   2                      AHT10Init();
+  74   2              }
+  75   1      }
+  76          //读取数据并处理返回
+  77          void AHT10_Read_Data(unsigned int *T,unsigned int *S) //湿度和温度数据
+  78          {                                                                                                                                                                                                               //例如温度2251,为22.51摄氏度，湿度30211，为30.211%
+  79   1              unsigned char Data[6] = {0};//读入六个字节数据,第一个状态字，后面两个半字节为湿度数据，最后为温度数据
+  80   1              unsigned long retudata = 0;     //使用一个long int类型来处理数据
+  81   1              unsigned char n = 0;                            //读忙计数，防止一直忙碌造成死循环
+  82   1              AHT10_Mea();                    //开始测量
+  83   1              Delay_ms(80);                   //延时等待至少75毫秒    
+  84   1              while(((AHT10_Status() & 0x80) == 0x80))        //读忙，如果忙碌则等待，超过300ms则退出
+  85   1              {
+  86   2                      Delay_ms(300);
+  87   2                      n++;
+  88   2                      if(n >= 100)break;
+  89   2              }
+  90   1        IIC_start();                  
+  91   1              IIC_write_byte(AHT10_Rd);                               //写入读数据指令
+  92   1              IIC_Get_ack();                          //接收应答
+  93   1              for(n = 0;n < 6;n++){
+  94   2                      Data[n] = IIC_read_byte();              //状态数据
+  95   2                      if(n < 5){
+  96   3                              IIC_ACK();              //应答
+  97   3                      }       
+  98   2                      else{
+  99   3                              IIC_NACK();             //第五次，非应答，读取完毕
+ 100   3                      }               
+ 101   2              }
+ 102   1              IIC_stop();     
+ 103   1              retudata = 0;
+ 104   1              retudata += Data[1];                            //原始湿度数据合成
+ 105   1              retudata = (retudata<<8) + Data[2];
+ 106   1              retudata = ((retudata<<8) + Data[3])>>4;
+ 107   1              //retudata = retudata & 0x000fffff;
+ 108   1      //      *S = (retudata*1000.0/1024.0/1024.0)*1000;//数据精确到三位小数
+ 109   1              *S = (retudata*1000.0/1024.0/1024.0)*10.0;
+ 110   1              retudata = 0;                           //原始温度数据合成
+ 111   1              retudata = ((Data[3] & 0x0f)<<8)|Data[4];
+ 112   1              retudata = (retudata<<8)|Data[5];
+ 113   1              //retudata = retudata & 0x000fffff;
+ 114   1              *T = (retudata*100.0*200.0/1024.0/1024.0 - 50.0*100);   //数据精确到两位小数    
+ 115   1              
+ 116   1      }
+C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 3   
+
+ 117          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    608    ----
+   CONSTANT SIZE    =      6    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      18
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

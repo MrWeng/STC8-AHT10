@@ -1,0 +1,71 @@
+C51 COMPILER V9.60.0.0   MAIN                                                              08/11/2020 00:10:47 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\AHT10;.\Delay;.\UART;.\IIC) DEB
+                    -UG OBJECTEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <intrins.h>
+   2          #include <STC8.h>
+   3          #include "Uart.h"
+   4          #include "Delay.h"
+   5          #include "AHT10.h"
+   6          #include "IIC.h"
+   7          unsigned char TH_Buffer[2][16] = {{"Temp:  .   C    "},{"Humi:  .    %   "}};
+   8          
+   9          void main(void)
+  10          {
+  11   1              unsigned int Temp = 0,Humi = 0; //温度和湿度
+  12   1              UartInit();
+  13   1              ES = 1;
+  14   1              EA = 1;
+  15   1              UartSendStr("Uart Test !\r\n");
+  16   1      #if HW_IIC
+  17   1                      
+  18   1              P_SW2 = 0x80;
+  19   1      
+  20   1              I2CCFG = 0xe0;                              //使能I2C主机模式
+  21   1              I2CMSST = 0x00;
+  22   1      #endif
+  23   1              AHT10_Init();   //AHT10初始化
+  24   1              while(1)
+  25   1              {
+  26   2                      AHT10_Read_Data(&Temp,&Humi);
+  27   2                      Delay_ms(1000);         //快速测量可能会引起传感器升温，此处降低测量速率
+  28   2                      
+  29   2                      TH_Buffer[0][5] = Temp/1000 + 0x30;
+  30   2                      TH_Buffer[0][6] = (Temp%1000)/100 + 0x30;       
+  31   2                      TH_Buffer[0][8] = (Temp%100)/10 + 0x30;
+  32   2                      TH_Buffer[0][9] = Temp%10 + 0x30;       
+  33   2      
+  34   2                      
+  35   2                      TH_Buffer[1][5] = Humi/1000 + 0x30;     
+  36   2                      TH_Buffer[1][6] = (Humi%1000)/100 + 0x30;
+  37   2                      TH_Buffer[1][8] = (Humi%100)/10 + 0x30;
+  38   2                      TH_Buffer[1][9] = Humi%10 + 0x30;
+  39   2              
+  40   2                      UartSendStr(TH_Buffer);
+*** WARNING C182 IN LINE 40 OF main.c: pointer to different objects
+  41   2                      Delay_ms(1500);
+  42   2              }
+  43   1      
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    266    ----
+   CONSTANT SIZE    =     14    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     32       4
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   MAIN                                                              08/11/2020 00:10:47 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
