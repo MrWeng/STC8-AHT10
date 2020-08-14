@@ -4,9 +4,9 @@
 #include "stc8.h"
 
 //*** <<< Use Configuration Wizard in Context Menu >>> ***
-
+//硬件IIC和软件IIC选择
 // <o> IIC selection <0=> Software I2C <1=> Hardware I2C
-#define IIC_selection (1)
+#define IIC_selection (0)
 
 #define SW_IIC   	(IIC_selection==0)
 #define HW_IIC  	(IIC_selection==1)

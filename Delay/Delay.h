@@ -3,11 +3,6 @@
 
 #include <STC8.h>
 #include <intrins.h>
-/*
- *@brief 		微秒延时函数			
- *@param[in]	us：需要延时的微秒数
- */
-extern void Delay_us(unsigned short int us);
 
 /*
  *@brief 		毫秒延时函数

@@ -10,13 +10,14 @@ void main(void)
 {
 	unsigned int Temp = 0,Humi = 0;	//温度和湿度
 	UartInit();
+	IIC_Init();
 	ES = 1;
 	EA = 1;
 	UartSendStr("Uart Test !\r\n");
+	
 #if HW_IIC
-		
+	
 	P_SW2 = 0x80;
-
 	I2CCFG = 0xe0;                              //使能I2C主机模式
 	I2CMSST = 0x00;
 #endif

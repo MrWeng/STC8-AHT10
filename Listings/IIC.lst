@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   IIC                                                               08/11/2020 00:10:48 PAGE 1   
+C51 COMPILER V9.60.0.0   IIC                                                               08/14/2020 19:11:02 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE IIC
@@ -18,12 +18,12 @@ line level    source
    8           *@date                 2020-8-10
    9           */
   10          #if HW_IIC
-  11          void Wait(void)
-  12          {
-  13   1          while (!(I2CMSST & 0x40));
-  14   1          I2CMSST &= ~0x40;
-  15   1      }
-  16          #endif
+              void Wait(void)
+              {
+                  while (!(I2CMSST & 0x40));
+                  I2CMSST &= ~0x40;
+              }
+              #endif
   17          
   18          /*
   19           *@brief                IIC总线初始化函数
@@ -43,14 +43,14 @@ line level    source
   33          void IIC_start(void)  
   34          {
   35   1      #if HW_IIC
-  36   1              I2CMSCR = 0x01;       //发送START命令
-  37   1          Wait();
-  38   1      #else
-                 IIC_SDA = 1;//拉高
-                 IIC_SCL = 1;
-                 IIC_SDA = 0;
-                 IIC_SCL = 0;         //拉低时钟线，准备开始时钟
-              #endif
+                      I2CMSCR = 0x01;       //发送START命令
+                  Wait();
+              #else
+  39   1         IIC_SDA = 1;//拉高
+  40   1         IIC_SCL = 1;
+  41   1         IIC_SDA = 0;
+  42   1         IIC_SCL = 0;         //拉低时钟线，准备开始时钟
+  43   1      #endif
   44   1      }
   45          /****************************************************************
   46          通讯停止信号：当 SCL 是高电平时 SDA线由低电平向高电平切换，表示通讯的停止。
@@ -58,16 +58,16 @@ line level    source
   48          void IIC_stop(void) 
   49          {
   50   1      #if HW_IIC
-  51   1              I2CMSCR = 0x06;                             //发送STOP命令
-  52   1              Wait();
-  53   1      #else
-                      IIC_SCL = 1;
-C51 COMPILER V9.60.0.0   IIC                                                               08/11/2020 00:10:48 PAGE 2   
+                      I2CMSCR = 0x06;                             //发送STOP命令
+                      Wait();
+              #else
+  54   1              IIC_SCL = 1;
+C51 COMPILER V9.60.0.0   IIC                                                               08/14/2020 19:11:02 PAGE 2   
 
-                      IIC_SDA = 0;
-                      IIC_SDA = 1;    //通讯停止
-                      IIC_SCL = 0;
-              #endif  
+  55   1              IIC_SDA = 0;
+  56   1              IIC_SDA = 1;    //通讯停止
+  57   1              IIC_SCL = 0;
+  58   1      #endif  
   59   1      }
   60          /****************************************************************
   61          //接收应答信号函数
@@ -75,12 +75,12 @@ line level    source
   63          void IIC_Get_ack(void)
   64          {
   65   1      #if HW_IIC
-  66   1              I2CMSCR = 0x03;                             //发送读ACK命令
-  67   1              Wait();
-  68   1      #else   
-                      IIC_SCL = 1;            //拉高时钟线。
-                      IIC_SCL = 0;            //拉低时钟线。
-              #endif
+                      I2CMSCR = 0x03;                             //发送读ACK命令
+                      Wait();
+              #else   
+  69   1              IIC_SCL = 1;            //拉高时钟线。
+  70   1              IIC_SCL = 0;            //拉低时钟线。
+  71   1      #endif
   72   1      }
   73          /****************************************************************
   74          //发送应答信号函数
@@ -89,27 +89,27 @@ line level    source
   77          void IIC_ACK()  
   78          { 
   79   1      #if HW_IIC
-  80   1              I2CMSST = 0x00;                             //设置ACK信号
-  81   1              I2CMSCR = 0x05;                             //发送ACK命令
-  82   1              Wait();
-  83   1      #else
-                      IIC_SDA = 0;    //拉低数据线，应答
-                      IIC_SCL = 1;    //产生第九个时钟信号。
-                      IIC_SCL = 0;    
-              #endif
+                      I2CMSST = 0x00;                             //设置ACK信号
+                      I2CMSCR = 0x05;                             //发送ACK命令
+                      Wait();
+              #else
+  84   1              IIC_SDA = 0;    //拉低数据线，应答
+  85   1              IIC_SCL = 1;    //产生第九个时钟信号。
+  86   1              IIC_SCL = 0;    
+  87   1      #endif
   88   1      }
   89          //非应答
   90          void IIC_NACK()
   91          { 
   92   1      #if HW_IIC
-  93   1              I2CMSST = 0x01;                             //设置NAK信号
-  94   1              I2CMSCR = 0x05;                             //发送ACK命令
-  95   1              Wait();
-  96   1      #else
-                      IIC_SDA = 1;    //拉高数据线，非应答
-                      IIC_SCL = 1;    //产生第九个时钟信号。
-                      IIC_SCL = 0;    
-              #endif
+                      I2CMSST = 0x01;                             //设置NAK信号
+                      I2CMSCR = 0x05;                             //发送ACK命令
+                      Wait();
+              #else
+  97   1              IIC_SDA = 1;    //拉高数据线，非应答
+  98   1              IIC_SCL = 1;    //产生第九个时钟信号。
+  99   1              IIC_SCL = 0;    
+ 100   1      #endif
  101   1      }
  102          
  103          /****************************************************************
@@ -118,25 +118,25 @@ line level    source
  106          void IIC_write_byte(unsigned char Data)
  107          {
  108   1      #if HW_IIC
- 109   1              I2CTXD = Data;                               //写数据到数据缓冲区
- 110   1              I2CMSCR = 0x02;                             //发送SEND命令
- 111   1              Wait();
- 112   1      #else
-                      unsigned char i;
-                      for(i=0;i<8;i++)//八位数据
-                      {
-                              if((Data & 0x80) == 0x80)
-C51 COMPILER V9.60.0.0   IIC                                                               08/11/2020 00:10:48 PAGE 3   
+                      I2CTXD = Data;                               //写数据到数据缓冲区
+                      I2CMSCR = 0x02;                             //发送SEND命令
+                      Wait();
+              #else
+ 113   1              unsigned char i;
+ 114   1              for(i=0;i<8;i++)//八位数据
+ 115   1              {
+ 116   2                      if((Data & 0x80) == 0x80)
+C51 COMPILER V9.60.0.0   IIC                                                               08/14/2020 19:11:02 PAGE 3   
 
-                                      IIC_SDA = 1;
-                              else
-                                      IIC_SDA = 0;
-                                      IIC_SCL = 1; //一个时钟信号送入数据
-                                      IIC_SCL = 0;
-                                      Data = Data << 1;//数据左移一位，把次高位放在最高位,为写入次高位做准备
-                      }
-                      IIC_SDA = 0;            //应答处理前拉低，跳过应答
-              #endif
+ 117   2                              IIC_SDA = 1;
+ 118   2                      else
+ 119   2                              IIC_SDA = 0;
+ 120   2                              IIC_SCL = 1; //一个时钟信号送入数据
+ 121   2                              IIC_SCL = 0;
+ 122   2                              Data = Data << 1;//数据左移一位，把次高位放在最高位,为写入次高位做准备
+ 123   2              }
+ 124   1              IIC_SDA = 0;            //应答处理前拉低，跳过应答
+ 125   1      #endif
  126   1      }
  127          /****************************************************************
  128          //从IIC总线读取一个字节的数据函数
@@ -144,24 +144,24 @@ line level    source
  130          unsigned char IIC_read_byte()
  131          {
  132   1      #if HW_IIC
- 133   1              I2CMSCR = 0x04;                             //发送RECV命令
- 134   1          Wait();
- 135   1          return I2CRXD;
- 136   1      #else   
-                  unsigned char i;
-                  unsigned char Data = 0;       //定义一个缓冲寄存器。
-                      IIC_SCL = 0;    //先拉低时钟线
-                      IIC_SDA = 1;    //再拉高数据线
-                  for(i = 0;i < 8;i++)
-                  {
-                                       Data = Data<<1;                //将缓冲字节的数据左移一位，准备读取数据。
-                     IIC_SCL = 1;                             //拉高时钟线，开始读取下一位数据
-                     if(IIC_SDA == 1)         //如果数据线为高平电平。
-                                              Data = Data|0x01;       //则给缓冲字节的最低位写1。
-                     IIC_SCL = 0;                             //拉低时钟线，一位读取完成
-                  }
-                  return Data;                                        //返回读取的一个字节数据。
-              #endif
+                      I2CMSCR = 0x04;                             //发送RECV命令
+                  Wait();
+                  return I2CRXD;
+              #else   
+ 137   1          unsigned char i;
+ 138   1          unsigned char Data = 0;       //定义一个缓冲寄存器。
+ 139   1              IIC_SCL = 0;    //先拉低时钟线
+ 140   1              IIC_SDA = 1;    //再拉高数据线
+ 141   1          for(i = 0;i < 8;i++)
+ 142   1          {
+ 143   2                               Data = Data<<1;                //将缓冲字节的数据左移一位，准备读取数据。
+ 144   2             IIC_SCL = 1;                             //拉高时钟线，开始读取下一位数据
+ 145   2             if(IIC_SDA == 1)         //如果数据线为高平电平。
+ 146   2                                      Data = Data|0x01;       //则给缓冲字节的最低位写1。
+ 147   2             IIC_SCL = 0;                             //拉低时钟线，一位读取完成
+ 148   2          }
+ 149   1          return Data;                                        //返回读取的一个字节数据。
+ 150   1      #endif
  151   1      }
  152          /*************************************************************************************************
  153          void IIC_single_byte_write(unsigned char Daddr,unsigned char Waddr,unsigned char Data)
@@ -190,7 +190,7 @@ line level    source
  176              IIC_Tack();//等待设备的应答。 
  177              Data=IIC_read_byte();//写入数据。
  178              IIC_stop();//产生停止符号。
-C51 COMPILER V9.60.0.0   IIC                                                               08/11/2020 00:10:48 PAGE 4   
+C51 COMPILER V9.60.0.0   IIC                                                               08/14/2020 19:11:02 PAGE 4   
 
  179              //-------------------返回读取的数据--------------------
  180              return Data;//返回读取的一个字节数据。
@@ -199,7 +199,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    102    ----
+   CODE SIZE        =    116    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

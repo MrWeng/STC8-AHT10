@@ -105,7 +105,7 @@ void AHT10_Read_Data(unsigned int *T,unsigned int *S) //湿度和温度数据
 	retudata = (retudata<<8) + Data[2];
 	retudata = ((retudata<<8) + Data[3])>>4;
 	//retudata = retudata & 0x000fffff;
-//	*S = (retudata*1000.0/1024.0/1024.0)*1000;//数据精确到三位小数
+	//	*S = (retudata*1000.0/1024.0/1024.0)*1000;//数据精确到三位小数
 	*S = (retudata*1000.0/1024.0/1024.0)*10.0;
 	retudata = 0;				//原始温度数据合成
 	retudata = ((Data[3] & 0x0f)<<8)|Data[4];

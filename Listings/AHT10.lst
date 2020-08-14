@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 1   
+C51 COMPILER V9.60.0.0   AHT10                                                             08/14/2020 19:11:02 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE AHT10
@@ -62,7 +62,7 @@ line level    source
   52          void AHT10Init(){
   53   1              IIC_start();
   54   1              IIC_write_byte(AHT10_Wr);
-C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 2   
+C51 COMPILER V9.60.0.0   AHT10                                                             08/14/2020 19:11:02 PAGE 2   
 
   55   1              IIC_Get_ack();                          //接收应答
   56   1        IIC_write_byte(0xe1); //初始化指令
@@ -117,7 +117,7 @@ line level    source
  105   1              retudata = (retudata<<8) + Data[2];
  106   1              retudata = ((retudata<<8) + Data[3])>>4;
  107   1              //retudata = retudata & 0x000fffff;
- 108   1      //      *S = (retudata*1000.0/1024.0/1024.0)*1000;//数据精确到三位小数
+ 108   1              //      *S = (retudata*1000.0/1024.0/1024.0)*1000;//数据精确到三位小数
  109   1              *S = (retudata*1000.0/1024.0/1024.0)*10.0;
  110   1              retudata = 0;                           //原始温度数据合成
  111   1              retudata = ((Data[3] & 0x0f)<<8)|Data[4];
@@ -126,7 +126,7 @@ line level    source
  114   1              *T = (retudata*100.0*200.0/1024.0/1024.0 - 50.0*100);   //数据精确到两位小数    
  115   1              
  116   1      }
-C51 COMPILER V9.60.0.0   AHT10                                                             08/11/2020 00:10:48 PAGE 3   
+C51 COMPILER V9.60.0.0   AHT10                                                             08/14/2020 19:11:02 PAGE 3   
 
  117          
 

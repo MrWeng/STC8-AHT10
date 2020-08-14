@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   DELAY                                                             08/11/2020 00:10:48 PAGE 1   
+C51 COMPILER V9.60.0.0   DELAY                                                             08/14/2020 19:11:02 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DELAY
@@ -11,78 +11,45 @@ line level    source
    1          #include "Delay.h"
    2          
    3          /*
-   4           *@brief                1微秒延时基础函数
+   4           *@brief                1毫秒延时基础函数
    5           *                              STC-ISP软件生成
    6           *@param[in]    NULL
    7           *@author               MrWeng
    8           *@date                 2020-8-7
    9           */
-  10          void Delay1us()         //@11.0592MHz
+  10          void Delay1ms()         //@11.0592MHz
   11          {
-  12   1              unsigned char i;
+  12   1              unsigned char i, j;
   13   1      
-  14   1              _nop_();
-  15   1              _nop_();
-  16   1              i = 1;
-  17   1              while (--i);
-  18   1      }
-  19          
-  20          /*
-  21           *@brief                微秒延时函数
-  22           *                              
-  23           *@param[in]    us：需要延时的微秒数
-  24           *@author               MrWeng
-  25           *@date                 2020-8-7
-  26           */
-  27          void Delay_us(unsigned short int us)
-  28          {
-  29   1              unsigned short int i;
-  30   1              for(i=0;i<us;i++)
-  31   1                      Delay1us();
-  32   1      }
-  33          
-  34          /*
-  35           *@brief                1毫秒延时基础函数
-  36           *                              STC-ISP软件生成
-  37           *@param[in]    NULL
-  38           *@author               MrWeng
-  39           *@date                 2020-8-7
-  40           */
-  41          void Delay1ms()         //@11.0592MHz
-  42          {
-  43   1              unsigned char i, j;
-  44   1      
-  45   1              i = 15;
-  46   1              j = 90;
-  47   1              do
-  48   1              {
-  49   2                      while (--j);
-  50   2              } while (--i);
-  51   1      }
-  52          
-  53          /*
-  54           *@brief                毫秒延时函数
-C51 COMPILER V9.60.0.0   DELAY                                                             08/11/2020 00:10:48 PAGE 2   
-
-  55           *                              
-  56           *@param[in]    ms：需要延时的毫秒数
-  57           *@author               MrWeng
-  58           *@date                 2020-8-7
-  59           */
-  60          void Delay_ms(unsigned short int ms)
-  61          {
-  62   1              unsigned short int i;
-  63   1              for(i=0;i<ms;i++)
-  64   1                      Delay1ms();
-  65   1      }
-  66          /*==========================================================*/
-  67          
-  68          
-  69          
+  14   1              i = 15;
+  15   1              j = 90;
+  16   1              do
+  17   1              {
+  18   2                      while (--j);
+  19   2              } while (--i);
+  20   1      }
+  21          
+  22          /*
+  23           *@brief                毫秒延时函数
+  24           *                              
+  25           *@param[in]    ms：需要延时的毫秒数
+  26           *@author               MrWeng
+  27           *@date                 2020-8-7
+  28           */
+  29          void Delay_ms(unsigned short int ms)
+  30          {
+  31   1              unsigned short int i;
+  32   1              for(i=0;i<ms;i++)
+  33   1                      Delay1ms();
+  34   1      }
+  35          /*==========================================================*/
+  36          
+  37          
+  38          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     66    ----
+   CODE SIZE        =     34    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
